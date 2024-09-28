@@ -9,8 +9,7 @@ import wind_icon from "../public/Assets/wind.png";
 import humidity_icon from "../public/Assets/humidity.png";
 
 function App() {
-
-  const inputRef = useRef()
+  const inputRef = useRef();
 
   const [weatherData, setWeatherData] = useState(false);
 
@@ -33,7 +32,7 @@ function App() {
 
   const search = async (city) => {
     if (city === "") {
-      alert("Please Enter City Name!")
+      alert("Please Enter City Name!");
       return;
     }
     try {
@@ -64,56 +63,71 @@ function App() {
     search("Islamabad");
   }, []);
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      search(inputRef.current.value);
+    }
+  };
+
   return (
     <>
       <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-screen flex justify-center items-center">
         <div className="bg-white/90 shadow-2xl rounded-3xl p-8 text-center w-96">
-          {/* Search Box */}
+
           <div className="flex items-center justify-center gap-2 mb-6">
             <input
               ref={inputRef}
               type="text"
               placeholder="Search City..."
               className="py-2 px-4 w-full rounded-l-md border border-gray-300 focus:border-blue-500 focus:outline-none transition-all duration-200"
+              onKeyDown={handleKeyPress}
             />
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-md transition-all duration-200">
-              <IoIosSearch className="text-2xl" onClick={()=>search(inputRef.current.value)} />
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-md transition-all duration-200"
+              onClick={() => search(inputRef.current.value)}
+            >
+              <IoIosSearch className="text-2xl" />
             </button>
           </div>
 
-          {/* Weather Icon and Temperature */}
-          {weatherData?
-          <>
-          <div className="py-4">
-            <img
-              src={weatherData.icon}
-              alt="weather icon"
-              className="w-32 mx-auto mb-4"
-            />
-            <h1 className="text-4xl font-semibold text-gray-800">
-              {weatherData.temprature}°C
-            </h1>
-            <p className="text-2xl font-medium text-blue-800">
-              {weatherData.location}
-            </p>
-          </div>
+          {weatherData ? (
+            <>
+              <div className="py-4">
+                <img
+                  src={weatherData.icon}
+                  alt="weather icon"
+                  className="w-32 mx-auto mb-4"
+                />
+                <h1 className="text-4xl font-semibold text-gray-800">
+                  {weatherData.temprature}°C
+                </h1>
+                <p className="text-2xl font-medium text-blue-800">
+                  {weatherData.location}
+                </p>
+              </div>
 
-          {/* Additional Weather Information */}
-          <div className="flex justify-between items-center text-gray-700 mt-6">
-            <div className="flex flex-col items-center">
-              <img src={humidity_icon} alt="humidity icon" className="w-8 mb-1" />
-              <p className="text-xl font-medium">{weatherData.humidity}%</p>
-              <span className="text-sm">Humidity</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <img src={wind_icon} alt="wind icon" className="w-8 mb-1" />
-              <p className="text-xl font-medium">{weatherData.windSpeed} Km/h</p>
-              <span className="text-sm">Wind Speed</span>
-            </div>
-          </div>
-          </>:<>
-          <p>Something Went Wrong</p>
-          </>}
+              <div className="flex justify-between items-center text-gray-700 mt-6">
+                <div className="flex flex-col items-center">
+                  <img
+                    src={humidity_icon}
+                    alt="humidity icon"
+                    className="w-8 mb-1"
+                  />
+                  <p className="text-xl font-medium">{weatherData.humidity}%</p>
+                  <span className="text-sm">Humidity</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <img src={wind_icon} alt="wind icon" className="w-8 mb-1" />
+                  <p className="text-xl font-medium">
+                    {weatherData.windSpeed} Km/h
+                  </p>
+                  <span className="text-sm">Wind Speed</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p>Something Went Wrong</p>
+          )}
         </div>
       </div>
     </>
