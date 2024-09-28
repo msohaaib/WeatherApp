@@ -1,56 +1,123 @@
-import { IoIosSearch } from "react-icons/io"
-import { MdOutlineWaves } from "react-icons/md"
-import { TiWeatherSunny } from "react-icons/ti"
-import { WiStrongWind } from "react-icons/wi"
-
-
+import { useEffect, useRef, useState } from "react";
+import { IoIosSearch } from "react-icons/io";
+import clear_icon from "../public/Assets/clear.png";
+import cloud_icon from "../public/Assets/cloud.png";
+import drizzle_icon from "../public/Assets/drizzle.png";
+import rain_icon from "../public/Assets/rain.png";
+import snow_icon from "../public/Assets/snow.png";
+import wind_icon from "../public/Assets/wind.png";
+import humidity_icon from "../public/Assets/humidity.png";
 
 function App() {
-  
+
+  const inputRef = useRef()
+
+  const [weatherData, setWeatherData] = useState(false);
+
+  const allIcons = {
+    "01d": clear_icon,
+    "01n": clear_icon,
+    "02d": cloud_icon,
+    "02n": cloud_icon,
+    "03d": cloud_icon,
+    "03n": cloud_icon,
+    "04d": drizzle_icon,
+    "04n": drizzle_icon,
+    "09d": rain_icon,
+    "09n": rain_icon,
+    "10d": rain_icon,
+    "10n": rain_icon,
+    "13d": snow_icon,
+    "13n": snow_icon,
+  };
+
+  const search = async (city) => {
+    if (city === "") {
+      alert("Please Enter City Name!")
+      return;
+    }
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${
+        import.meta.env.VITE_APP_ID
+      }`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      console.log(data);
+
+      const icons = allIcons[data.weather[0].icon] || clear_icon;
+
+      setWeatherData({
+        humidity: data.main.humidity,
+        windSpeed: data.wind.speed,
+        temprature: Math.floor(data.main.temp),
+        location: data.name,
+        icon: icons,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    search("Islamabad");
+  }, []);
 
   return (
     <>
-      <div className=" w-1/4 bg-blue-500 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 p-8 text-center rounded-3xl text-white">
-        <div className="flex py-4">
-          <input type="text" placeholder="search" 
-          className="py-1 px-2 rounded relative left-1/2 -translate-x-1/2"
-          />
-          <IoIosSearch 
-          className="text-2xl relative text-black left-16 top-1"
-          />
-        </div>
-        <div className="py-4">
-        <TiWeatherSunny className="relative left-1/2 -translate-x-1/2 text-yellow-400 text-6xl my-4" />
-        <h1 className="text-3xl font-bold">21 <sup>o</sup>C</h1>
-        <p className="text-3xl font-semibold">New York</p>
-        </div>
-        <div className="flex flex-row py-4 relative left-28 gap-8">
-          <div className="flex flex-row">
-            <div>
-            <MdOutlineWaves 
-            className="text-2xl"
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-screen flex justify-center items-center">
+        <div className="bg-white/90 shadow-2xl rounded-3xl p-8 text-center w-96">
+          {/* Search Box */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Search City..."
+              className="py-2 px-4 w-full rounded-l-md border border-gray-300 focus:border-blue-500 focus:outline-none transition-all duration-200"
             />
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-md transition-all duration-200">
+              <IoIosSearch className="text-2xl" onClick={()=>search(inputRef.current.value)} />
+            </button>
+          </div>
+
+          {/* Weather Icon and Temperature */}
+          {weatherData?
+          <>
+          <div className="py-4">
+            <img
+              src={weatherData.icon}
+              alt="weather icon"
+              className="w-32 mx-auto mb-4"
+            />
+            <h1 className="text-4xl font-semibold text-gray-800">
+              {weatherData.temprature}°C
+            </h1>
+            <p className="text-2xl font-medium text-blue-800">
+              {weatherData.location}
+            </p>
+          </div>
+
+          {/* Additional Weather Information */}
+          <div className="flex justify-between items-center text-gray-700 mt-6">
+            <div className="flex flex-col items-center">
+              <img src={humidity_icon} alt="humidity icon" className="w-8 mb-1" />
+              <p className="text-xl font-medium">{weatherData.humidity}%</p>
+              <span className="text-sm">Humidity</span>
             </div>
-            <div className="flex flex-col">
-              <p>67%</p>
-              <p>Humidity</p>
+            <div className="flex flex-col items-center">
+              <img src={wind_icon} alt="wind icon" className="w-8 mb-1" />
+              <p className="text-xl font-medium">{weatherData.windSpeed} Km/h</p>
+              <span className="text-sm">Wind Speed</span>
             </div>
           </div>
-          <div className="flex flex-row">
-            <div>
-              <WiStrongWind 
-              className="text-2xl"
-              />
-            </div>
-            <div className="flex flex-col">
-              <p>2.06 Km/h</p>
-              <p>Wind Speed</p>
-            </div>
-          </div>
+          </>:<>
+          <p>Something Went Wrong</p>
+          </>}
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
