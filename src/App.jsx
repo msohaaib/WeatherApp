@@ -71,8 +71,8 @@ function App() {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-screen flex justify-center items-center">
-        <div className="bg-white/90 shadow-2xl rounded-3xl p-8 text-center w-96">
+      <div className=" h-screen flex justify-center items-center">
+        <div className="bg-gradient-to-r from-blue-800 to-blue-600 shadow-2xl rounded-3xl p-8 text-center w-96">
 
           <div className="flex items-center justify-center gap-2 mb-6">
             <input
@@ -98,15 +98,15 @@ function App() {
                   alt="weather icon"
                   className="w-32 mx-auto mb-4"
                 />
-                <h1 className="text-4xl font-semibold text-gray-800">
+                <h1 className="text-4xl font-semibold text-white">
                   {weatherData.temprature}°C
                 </h1>
-                <p className="text-2xl font-medium text-blue-800">
+                <p className="text-2xl font-medium text-slate-200">
                   {weatherData.location}
                 </p>
               </div>
 
-              <div className="flex justify-between items-center text-gray-700 mt-6">
+              <div className="flex justify-between items-center text-slate-100 mt-6">
                 <div className="flex flex-col items-center">
                   <img
                     src={humidity_icon}
